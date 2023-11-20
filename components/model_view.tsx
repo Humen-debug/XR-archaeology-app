@@ -41,7 +41,10 @@ export default function ModelView(props: ModelViewProps) {
 
   useEffect(() => {
     // Clear the animation loop when the component unmounts
-    return () => clearTimeout(timeout);
+    return () => {
+      console.log("end timeout");
+      clearTimeout(timeout);
+    };
   }, []);
 
   /// 3D model loader solution https://github.com/expo/expo-three/issues/151
@@ -170,6 +173,7 @@ export default function ModelView(props: ModelViewProps) {
     const render = () => {
       timeout = requestAnimationFrame(render);
       if (obj) {
+        if (Platform.OS === "ios") console.log(`${Date.now()}: rotate`);
         obj.rotation.y += 0.01;
       }
       renderer.render(scene, camera);
@@ -182,7 +186,7 @@ export default function ModelView(props: ModelViewProps) {
 
   return (
     <OrbitControlsView style={{ flex: 1 }} camera={camera} minDistance={10}>
-      <GLView onContextCreate={onContextCreate} style={{ flex: 1 }} />
+      <GLView onContextCreate={onContextCreate} style={{ flex: 1 }} msaaSamples={0} />
     </OrbitControlsView>
   );
 }
